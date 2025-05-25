@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}LuxeWheels - Home{% endblock %}
+
+{% block content %}
+<div class="search-section">
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by car type, brand, or model...">
+            <button id="searchButton">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div id="searchSuggestions" class="search-suggestions"></div>
+    </div>
+</div>
+
+<div class="filters-section">
+    <div class="filter-container">
+        <select id="typeFilter">
+            <option value="">All Types</option>
+        </select>
+        <select id="brandFilter">
+            <option value="">All Brands</option>
+        </select>
+    </div>
+</div>
+
+<section id="carouselSection" class="carousel-section">
+    <h2>Available Cars</h2>
+    <div class="carousel-container">
+        <button class="carousel-button prev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel">
+            <!-- Cars will be dynamically added here -->
+        </div>
+        <button class="carousel-button next">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</section>
+
+<section class="grid-section">
+    <h2>All Cars</h2>
+    <div class="car-grid">
+        <!-- Cars will be dynamically added here -->
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %} 
