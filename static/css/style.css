@@ -143,49 +143,126 @@ nav {
 .carousel-section {
     padding: 2rem;
     background-color: white;
+    overflow: hidden; /* Prevent horizontal scroll on the page */
 }
 
 .carousel-section h2 {
     max-width: 1200px;
     margin: 0 auto 1rem;
+    padding: 0 2rem;
 }
 
 .carousel-container {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
+    padding: 0 2rem;
 }
 
 .carousel {
     display: flex;
-    overflow-x: hidden;
+    gap: 1.5rem;
     scroll-behavior: smooth;
-    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
     padding: 1rem 0;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
+/* Hide scrollbar */
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Carousel Card Styles */
+.carousel .car-card {
+    scroll-snap-align: start;
+    min-width: calc(100% - 2rem); /* Mobile: 1 card */
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+
+.carousel .car-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+/* Carousel Navigation */
 .carousel-button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.carousel-button:hover {
+    background-color: var(--secondary-color);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .carousel-button.prev {
-    left: -20px;
+    left: 0;
 }
 
 .carousel-button.next {
-    right: -20px;
+    right: 0;
+}
+
+.carousel-button i {
+    font-size: 1.2rem;
+}
+
+/* Auto-scroll progress bar */
+.carousel-progress {
+    position: absolute;
+    bottom: -10px;
+    left: 2rem;
+    right: 2rem;
+    height: 4px;
+    background-color: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.carousel-progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: var(--secondary-color);
+    transition: width 0.2s ease;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+    .carousel .car-card {
+        min-width: calc(50% - 1.5rem); /* 2 cards for small tablets */
+    }
+}
+
+@media (min-width: 1024px) {
+    .carousel .car-card {
+        min-width: calc(20% - 1.5rem); /* 5 cards for 16:9 screens */
+    }
+}
+
+@media (min-width: 1440px) {
+    .carousel .car-card {
+        min-width: calc(12.5% - 1.5rem); /* 8 cards for 21:9 screens */
+    }
 }
 
 /* Grid Section */
