@@ -1,0 +1,11 @@
+# Flask specific ignores
+__pycache__/
+*.pyc
+.flaskenv
+instance/
+virtualenv/
+venv/
+db.sqlite3
+
+# Directory to ignore
+json_examples/ 
