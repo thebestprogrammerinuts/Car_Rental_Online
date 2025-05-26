@@ -1,4 +1,4 @@
-# LuxeWheels Car Rental System
+# JoyRide-NG Car Rental System
 
 A modern web application for car rental services, built with Flask backend and vanilla JavaScript frontend.
 
@@ -79,7 +79,7 @@ car-rental-system/
 ├── requirements.txt       # Python dependencies
 ├── README.md             # Project documentation
 ├── json_data/            # Data storage
-│   ├── cars_processed_v1.json  # Car information
+│   ├── cars.json  # Car information
 │   └── orders.json             # Order information
 ├── static/               # Static files
 │   ├── css/
@@ -95,7 +95,7 @@ car-rental-system/
 
 ## Data Structure
 
-### Cars (cars_processed_v1.json)
+### Cars (cars.json)
 ```json
 {
   "carType": "string",

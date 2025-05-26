@@ -6,6 +6,7 @@
     --text-color: #333;
     --light-gray: #f5f6fa;
     --border-color: #dcdde1;
+    --hover-transition: all 0.3s ease;
 }
 
 * {
@@ -14,10 +15,37 @@
     box-sizing: border-box;
 }
 
+/* Parallax Background */
+.parallax-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 800vh; /* Make it taller than viewport */
+    z-index: -1;
+    background: 
+        linear-gradient(135deg, rgba(100, 181, 246, 0.15) 25%, transparent 25%) -50px 0,
+        linear-gradient(225deg, rgba(30, 136, 229, 0.15) 25%, transparent 25%) -50px 0,
+        linear-gradient(315deg, rgba(21, 101, 192, 0.15) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(13, 71, 161, 0.15) 25%, transparent 25%);
+    background-size: 100px 100px;
+    background-color: #f8faff; /* Cool light blue-gray background */
+    transform-origin: center top;
+    will-change: transform;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
+    background: transparent;
+    position: relative;
+    min-height: 100vh;
+}
+
+main {
+    position: relative;
+    z-index: 1;
 }
 
 /* Header Styles */
@@ -62,8 +90,11 @@ nav {
 
 /* Search Section */
 .search-section {
-    background-color: var(--light-gray);
+    background-color: rgba(245, 246, 250, 0.9);
+    backdrop-filter: blur(5px);
     padding: 2rem;
+    position: relative;
+    z-index: 1001;
 }
 
 .search-container {
@@ -92,6 +123,7 @@ nav {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .search-suggestions {
@@ -106,23 +138,40 @@ nav {
     max-height: 200px;
     overflow-y: auto;
     display: none;
-    z-index: 1000;
+    z-index: 1002;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-suggestions div {
     padding: 0.5rem 1rem;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .search-suggestions div:hover {
     background-color: var(--light-gray);
 }
 
+.search-suggestions div.slide-right {
+    animation: suggestionSlideRight 0.3s ease-out forwards;
+}
+
+@keyframes suggestionSlideRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
 /* Filters Section */
 .filters-section {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
     padding: 1rem 2rem;
-    background-color: white;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .filter-container {
@@ -142,8 +191,18 @@ nav {
 /* Carousel Section */
 .carousel-section {
     padding: 2rem;
-    background-color: white;
-    overflow: hidden; /* Prevent horizontal scroll on the page */
+    background-color: transparent;
+    overflow: hidden;
+    opacity: 1;
+    max-height: 1000px; /* Adjust this value based on your carousel's maximum height */
+    transition: opacity 0.3s ease-out, max-height 0.5s ease-out, padding 0.3s ease-out;
+}
+
+.carousel-section.hidden {
+    opacity: 0;
+    max-height: 0;
+    padding: 0 2rem;
+    pointer-events: none;
 }
 
 .carousel-section h2 {
@@ -268,12 +327,16 @@ nav {
 /* Grid Section */
 .grid-section {
     padding: 2rem;
-    background-color: var(--light-gray);
+    background-color: transparent;
+    position: relative;
+    z-index: 2;
 }
 
 .grid-section h2 {
     max-width: 1200px;
     margin: 0 auto 1rem;
+    color: var(--primary-color);
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .car-grid {
@@ -282,19 +345,25 @@ nav {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
+    position: relative;
+    z-index: 2;
 }
 
 /* Car Card */
 .car-card {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(5px);
+    position: relative;
+    z-index: 2;
 }
 
 .car-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .car-card img {
@@ -332,11 +401,14 @@ nav {
     border-radius: 4px;
     cursor: pointer;
     margin-top: 1rem;
+    transition: all 0.3s ease;
 }
 
 .car-card button:disabled {
     background-color: var(--border-color);
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Reservation Page */
@@ -466,4 +538,119 @@ footer {
     .carousel {
         overflow-x: auto;
     }
+}
+
+/* Parallax Scroll Effect */
+@media (min-width: 768px) {
+    body::before {
+        animation: parallaxScroll 1s infinite linear paused;
+    }
+    
+    @keyframes parallaxScroll {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(-100px);
+        }
+    }
+}
+
+/* Button Animations */
+.search-box button,
+.car-card button,
+#submitButton,
+#cancelButton,
+.carousel-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+}
+
+.search-box button::before,
+.car-card button::before,
+#submitButton::before,
+#cancelButton::before,
+.carousel-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.search-box button:hover,
+.car-card button:hover:not(:disabled),
+#submitButton:hover:not(:disabled),
+#cancelButton:hover,
+.carousel-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.search-box button:hover::before,
+.car-card button:hover:not(:disabled)::before,
+#submitButton:hover:not(:disabled)::before,
+#cancelButton:hover::before,
+.carousel-button:hover::before {
+    transform: translateX(100%);
+}
+
+.search-box button:active,
+.car-card button:active:not(:disabled),
+#submitButton:active:not(:disabled),
+#cancelButton:active,
+.carousel-button:active {
+    transform: translateY(1px);
+}
+
+/* Click Animation */
+@keyframes slideRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.button-clicked {
+    animation: slideRight 0.3s ease-in-out;
+}
+
+/* Search Box Button */
+.search-box button {
+    padding: 0.8rem 1.5rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Car Card Button */
+.car-card button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.car-card button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 } 

@@ -14,7 +14,7 @@ def load_cars():
     Load car data from JSON file
     Returns: List of car dictionaries
     """
-    with open('json_data/cars_processed_v1.json', 'r') as f:
+    with open('json_data/cars.json', 'r') as f:
         return json.load(f)
 
 # Load orders data
@@ -173,7 +173,7 @@ def reserve_car():
     
     # Update car availability
     car['available'] = False
-    with open('json_data/cars_processed_v1.json', 'w') as f:
+    with open('json_data/cars.json', 'w') as f:
         json.dump(cars, f, indent=2)
     
     return jsonify({'success': True, 'order': new_order})

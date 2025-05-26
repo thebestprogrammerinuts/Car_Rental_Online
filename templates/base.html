@@ -9,11 +9,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <div class="parallax-background"></div>
     <header>
         <nav>
             <div class="logo" onclick="window.location.href='/'">
                 <i class="fas fa-car"></i>
-                <span>LuxeWheels</span>
+                <span>JoyRide-NG</span>
             </div>
             <div class="nav-right">
                 <a href="/reservation" class="reservation-icon">
@@ -29,9 +30,10 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 LuxeWheels Car Rental. All rights reserved.</p>
+        <p>&copy; 2025 JoyRide-NG Car Rental. All rights reserved.</p>
     </footer>
 
+    <script src="{{ url_for('static', filename='js/parallax.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html> 

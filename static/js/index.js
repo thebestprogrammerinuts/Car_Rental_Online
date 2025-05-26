@@ -73,10 +73,18 @@ async function loadCars(searchQuery = '', type = '', brand = '') {
         const cars = await response.json();
         
         currentCars = cars;
-        availableCars = cars.filter(car => car.available);
+        // Sort available cars by price (descending) and take top 12 for carousel
+        availableCars = cars
+            .filter(car => car.available)
+            .sort((a, b) => b.pricePerDay - a.pricePerDay)
+            .slice(0, 12);
 
-        // Show/hide carousel based on search
-        carouselSection.style.display = searchQuery ? 'none' : 'block';
+        // Show/hide carousel based on search with animation
+        if (searchQuery) {
+            carouselSection.classList.add('hidden');
+        } else {
+            carouselSection.classList.remove('hidden');
+        }
 
         renderCars();
     } catch (error) {
@@ -141,8 +149,11 @@ function setupEventListeners() {
         debounceTimer = setTimeout(handleSearch, DEBOUNCE_DELAY);
     });
 
-    // Search button
-    searchButton.addEventListener('click', handleSearch);
+    // Search button with animation
+    searchButton.addEventListener('click', async (e) => {
+        animateButtonClick(e.target);
+        await handleSearch();
+    });
 
     // Filters
     typeFilter.addEventListener('change', handleFilters);
@@ -150,16 +161,62 @@ function setupEventListeners() {
 
     // Setup carousel functionality
     setupCarousel();
+
+    // Add click animations to all buttons
+    setupButtonAnimations();
+}
+
+// Button click animation handler
+function animateButtonClick(button) {
+    button.classList.add('button-clicked');
+    button.addEventListener('animationend', () => {
+        button.classList.remove('button-clicked');
+    }, { once: true });
+}
+
+// Setup button animations
+function setupButtonAnimations() {
+    // Add animation to carousel buttons
+    prevButton?.addEventListener('click', (e) => animateButtonClick(e.target));
+    nextButton?.addEventListener('click', (e) => animateButtonClick(e.target));
+
+    // Add animation to car card buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('.car-card button:not(:disabled)')) {
+            animateButtonClick(e.target);
+        }
+    });
 }
 
 // Handle search input
 async function handleSearch() {
-    const query = searchInput.value.trim();
+    const query = searchInput.value.trim().toLowerCase();
     
     if (query.length > 0) {
         try {
             const response = await fetch(`/api/search-suggestions?q=${encodeURIComponent(query)}`);
             const suggestions = await response.json();
+            
+            // Auto-select matching type and brand in filters
+            const typeOptions = Array.from(typeFilter.options).map(opt => opt.value.toLowerCase());
+            const brandOptions = Array.from(brandFilter.options).map(opt => opt.value.toLowerCase());
+            
+            // Check if query exactly matches any type or brand
+            const matchingType = typeOptions.find(type => type && query === type.toLowerCase());
+            const matchingBrand = brandOptions.find(brand => brand && query === brand.toLowerCase());
+            
+            // Set the filters if matches found
+            if (matchingType) {
+                typeFilter.value = Array.from(typeFilter.options).find(opt => 
+                    opt.value.toLowerCase() === matchingType
+                ).value;
+            }
+            
+            if (matchingBrand) {
+                brandFilter.value = Array.from(brandFilter.options).find(opt => 
+                    opt.value.toLowerCase() === matchingBrand
+                ).value;
+            }
             
             if (suggestions.length > 0) {
                 showSuggestions(suggestions);
@@ -170,6 +227,9 @@ async function handleSearch() {
             console.error('Error fetching suggestions:', error);
         }
     } else {
+        // Clear filters when search is empty
+        typeFilter.value = '';
+        brandFilter.value = '';
         hideSuggestions();
     }
 
@@ -183,9 +243,35 @@ function showSuggestions(suggestions) {
         const div = document.createElement('div');
         div.textContent = suggestion;
         div.addEventListener('click', () => {
+            // Add slide-right animation
+            div.classList.add('slide-right');
+            
+            // Set the input value
             searchInput.value = suggestion;
-            hideSuggestions();
-            handleSearch();
+            
+            // Auto-select matching type and brand in filters when suggestion is clicked
+            const suggestionLower = suggestion.toLowerCase();
+            const typeOptions = Array.from(typeFilter.options);
+            const brandOptions = Array.from(brandFilter.options);
+            
+            // Check if suggestion matches any type or brand
+            const matchingType = typeOptions.find(opt => opt.value && suggestionLower === opt.value.toLowerCase());
+            const matchingBrand = brandOptions.find(opt => opt.value && suggestionLower === opt.value.toLowerCase());
+            
+            // Set the filters if matches found
+            if (matchingType) {
+                typeFilter.value = matchingType.value;
+            }
+            
+            if (matchingBrand) {
+                brandFilter.value = matchingBrand.value;
+            }
+            
+            // Wait for animation to complete before hiding suggestions
+            setTimeout(() => {
+                hideSuggestions();
+                handleSearch();
+            }, 300); // Match this with the animation duration
         });
         searchSuggestions.appendChild(div);
     });
@@ -206,8 +292,10 @@ async function handleFilters() {
 function rentCar(vin) {
     // Store selected car VIN in localStorage
     localStorage.setItem('selectedCarVIN', vin);
-    // Redirect to reservation page
-    window.location.href = '/reservation';
+    // Animation will complete before redirect
+    setTimeout(() => {
+        window.location.href = '/reservation';
+    }, 300); // Match this with the animation duration
 }
 
 // Close suggestions when clicking outside
